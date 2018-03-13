@@ -719,7 +719,8 @@ transition_result_t arm_disarm(bool arm, orb_advert_t *mavlink_log_pub_local, co
 					     hrt_elapsed_time(&commander_boot_timestamp));
 
 	if (arming_res == TRANSITION_CHANGED) {
-		mavlink_log_info(mavlink_log_pub_local, "%s by %s", arm ? "ARMED" : "DISARMED", armedBy);
+		//SANJU
+		mavlink_and_console_log_info(mavlink_log_pub_local, "%s by %s", arm ? "ARMED" : "DISARMED", armedBy);
 
 	} else if (arming_res == TRANSITION_DENIED) {
 		tune_negative(true);
@@ -935,13 +936,16 @@ Commander::handle_command(vehicle_status_s *status_local, const safety_s *safety
 					cmd_result = vehicle_command_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
 
 				} else {
+					//SANJU
+					mavlink_and_console_log_info(&mavlink_log_pub, "In VEHICLE_CMD_COMPONENT_ARM_DISARM -> Trying to set home position");
 					cmd_result = vehicle_command_s::VEHICLE_CMD_RESULT_ACCEPTED;
 
 					/* update home position on arming if at least 500 ms from commander start spent to avoid setting home on in-air restart */
 					if (cmd_arms && (arming_res == TRANSITION_CHANGED) &&
 						(hrt_absolute_time() > (commander_boot_timestamp + INAIR_RESTART_HOLDOFF_INTERVAL)) &&
 						!home->manual_home) {
-
+						//SANJU
+						mavlink_and_console_log_info(&mavlink_log_pub, "In VEHICLE_CMD_COMPONENT_ARM_DISARM -> setting home position");	
 						set_home_position(*home_pub, *home, *local_pos, *global_pos, *attitude, false);
 					}
 				}
@@ -1038,7 +1042,9 @@ Commander::handle_command(vehicle_status_s *status_local, const safety_s *safety
 	case vehicle_command_s::VEHICLE_CMD_NAV_GUIDED_ENABLE: {
 			transition_result_t res = TRANSITION_DENIED;
 			static main_state_t main_state_pre_offboard = commander_state_s::MAIN_STATE_MANUAL;
-
+			//SANJU
+			mavlink_and_console_log_info(&mavlink_log_pub, "In VEHICLE_CMD_NAV_GUIDED_ENABLE");
+			mavlink_and_console_log_info(&mavlink_log_pub, "Current State - %u", internal_state.main_state);
 			if (internal_state.main_state != commander_state_s::MAIN_STATE_OFFBOARD) {
 				main_state_pre_offboard = internal_state.main_state;
 			}
@@ -1841,18 +1847,24 @@ Commander::run()
 			orb_copy(ORB_ID(offboard_control_mode), offboard_control_mode_sub, &offboard_control_mode);
 		}
 
+		//SANJU
+		mavlink_and_console_log_info(&mavlink_log_pub, "Offboard Timestamp is %d", offboard_control_mode.timestamp);
 		if (offboard_control_mode.timestamp != 0 &&
 		    offboard_control_mode.timestamp + OFFBOARD_TIMEOUT > hrt_absolute_time()) {
 			if (status_flags.offboard_control_signal_lost) {
 				status_flags.offboard_control_signal_lost = false;
 				status_flags.offboard_control_loss_timeout = false;
 				status_changed = true;
+				//SANJU
+				mavlink_and_console_log_info(&mavlink_log_pub, "Offboard signal SET");
 			}
 
 		} else {
 			if (!status_flags.offboard_control_signal_lost) {
 				status_flags.offboard_control_signal_lost = true;
 				status_changed = true;
+				//SANJU
+				mavlink_and_console_log_info(&mavlink_log_pub, "Offboard signal LOST");
 			}
 
 			/* check timer if offboard was there but now lost */
