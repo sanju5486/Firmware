@@ -1848,7 +1848,7 @@ Commander::run()
 		}
 
 		//SANJU
-		mavlink_and_console_log_info(&mavlink_log_pub, "Offboard Timestamp is %d", offboard_control_mode.timestamp);
+		//mavlink_and_console_log_info(&mavlink_log_pub, "Offboard Timestamp is %d", offboard_control_mode.timestamp);
 		if (offboard_control_mode.timestamp != 0 &&
 		    offboard_control_mode.timestamp + OFFBOARD_TIMEOUT > hrt_absolute_time()) {
 			if (status_flags.offboard_control_signal_lost) {
