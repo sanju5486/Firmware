@@ -1847,8 +1847,13 @@ Commander::run()
 			orb_copy(ORB_ID(offboard_control_mode), offboard_control_mode_sub, &offboard_control_mode);
 		}
 
-		//SANJU
+		//SANJU -- say that offboard is not lost
+		status_flags.offboard_control_signal_lost = false;
+		mavlink_and_console_log_info(&mavlink_log_pub, "Offboard signal SET");
 		//mavlink_and_console_log_info(&mavlink_log_pub, "Offboard Timestamp is %d", offboard_control_mode.timestamp);
+
+		//SANJU - just ignore this non-sense for our needs
+		/*
 		if (offboard_control_mode.timestamp != 0 &&
 		    offboard_control_mode.timestamp + OFFBOARD_TIMEOUT > hrt_absolute_time()) {
 			if (status_flags.offboard_control_signal_lost) {
@@ -1867,14 +1872,14 @@ Commander::run()
 				mavlink_and_console_log_info(&mavlink_log_pub, "Offboard signal LOST");
 			}
 
-			/* check timer if offboard was there but now lost */
+			//check timer if offboard was there but now lost 
 			if (!status_flags.offboard_control_loss_timeout && offboard_control_mode.timestamp != 0) {
 				if (offboard_loss_timeout < FLT_EPSILON) {
-					/* execute loss action immediately */
+					// execute loss action immediately 
 					status_flags.offboard_control_loss_timeout = true;
 
 				} else {
-					/* wait for timeout if set */
+					// wait for timeout if set
 					status_flags.offboard_control_loss_timeout = offboard_control_mode.timestamp +
 						OFFBOARD_TIMEOUT + offboard_loss_timeout * 1e6f < hrt_absolute_time();
 				}
@@ -1884,6 +1889,7 @@ Commander::run()
 				}
 			}
 		}
+		*/
 
 		for (int i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
 
