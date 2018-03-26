@@ -1849,7 +1849,7 @@ Commander::run()
 
 		//SANJU -- say that offboard is not lost
 		status_flags.offboard_control_signal_lost = false;
-		mavlink_and_console_log_info(&mavlink_log_pub, "Offboard signal SET");
+		//mavlink_and_console_log_info(&mavlink_log_pub, "Offboard signal SET");
 		//mavlink_and_console_log_info(&mavlink_log_pub, "Offboard Timestamp is %d", offboard_control_mode.timestamp);
 
 		//SANJU - just ignore this non-sense for our needs

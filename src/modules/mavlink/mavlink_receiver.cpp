@@ -839,11 +839,14 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 		PX4_ISFINITE(set_position_target_local_ned.yaw);
 
 	/* Only accept messages which are intended for this system */
+
+	// SANJU - remove this check temporarily
+	/*
 	if ((mavlink_system.sysid == set_position_target_local_ned.target_system ||
 	     set_position_target_local_ned.target_system == 0) &&
 	    (mavlink_system.compid == set_position_target_local_ned.target_component ||
 	     set_position_target_local_ned.target_component == 0) &&
-	    values_finite) {
+	    values_finite) { */
 
 		/* convert mavlink type (local, NED) to uORB offboard control struct */
 		offboard_control_mode.ignore_position = (bool)(set_position_target_local_ned.type_mask & 0x7);
@@ -889,6 +892,7 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 					PX4_WARN("force setpoint not supported");
 
 				} else {
+					PX4_WARN("In Local NED else");
 					/* It's not a pure force setpoint: publish to setpoint triplet  topic */
 					struct position_setpoint_triplet_s pos_sp_triplet = {};
 					pos_sp_triplet.timestamp = hrt_absolute_time();
@@ -994,8 +998,9 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 
 			//}
 
-		}
-	}
+		}		
+	//}
+		PX4_WARN("Not in Local NED");
 }
 
 void
