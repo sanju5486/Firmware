@@ -826,18 +826,6 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 
 	struct offboard_control_mode_s offboard_control_mode = {};
 
-	bool values_finite =
-		PX4_ISFINITE(set_position_target_local_ned.x) &&
-		PX4_ISFINITE(set_position_target_local_ned.y) &&
-		PX4_ISFINITE(set_position_target_local_ned.z) &&
-		PX4_ISFINITE(set_position_target_local_ned.vx) &&
-		PX4_ISFINITE(set_position_target_local_ned.vy) &&
-		PX4_ISFINITE(set_position_target_local_ned.vz) &&
-		PX4_ISFINITE(set_position_target_local_ned.afx) &&
-		PX4_ISFINITE(set_position_target_local_ned.afy) &&
-		PX4_ISFINITE(set_position_target_local_ned.afz) &&
-		PX4_ISFINITE(set_position_target_local_ned.yaw);
-
 	/* Only accept messages which are intended for this system */
 
 	// SANJU - remove this check temporarily
