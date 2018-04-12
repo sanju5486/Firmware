@@ -2008,18 +2008,22 @@ Mavlink::task_main(int argc, char *argv[])
 	if (_mode != MAVLINK_MODE_IRIDIUM) {
 
 		/* HEARTBEAT is constant rate stream, rate never adjusted */
-		configure_stream("HEARTBEAT", 1.0f);
+		// SANJU - Increase rate of Heartbeat
+		configure_stream("HEARTBEAT", 20.0f);
 
 		/* STATUSTEXT stream is like normal stream but gets messages from logbuffer instead of uORB */
-		configure_stream("STATUSTEXT", 20.0f);
+		// SANJU - Reduce rate of StatusText
+		configure_stream("STATUSTEXT", 1.0f);
 
 		/* COMMAND_LONG stream: use unlimited rate to send all commands */
 		configure_stream("COMMAND_LONG");
 
 	}
 
-	switch (_mode) {
+	switch (_mode) {		
 	case MAVLINK_MODE_NORMAL:
+		// SANJU
+		PX4_WARN("mavlink mode %s", MAVLINK_MODE_NORMAL);
 		configure_stream("SYS_STATUS", 1.0f);
 		configure_stream("EXTENDED_SYS_STATE", 1.0f);
 		configure_stream("HIGHRES_IMU", 1.5f);
@@ -2050,6 +2054,8 @@ Mavlink::task_main(int argc, char *argv[])
 		break;
 
 	case MAVLINK_MODE_ONBOARD:
+		// SANJU
+		PX4_WARN("mavlink mode %s", MAVLINK_MODE_ONBOARD);
 		configure_stream("SYS_STATUS", 5.0f);
 		configure_stream("EXTENDED_SYS_STATE", 5.0f);
 		configure_stream("HIGHRES_IMU", 50.0f);
@@ -2086,6 +2092,8 @@ Mavlink::task_main(int argc, char *argv[])
 		break;
 
 	case MAVLINK_MODE_OSD:
+		// SANJU
+		PX4_WARN("mavlink mode %s", MAVLINK_MODE_OSD);
 		configure_stream("SYS_STATUS", 5.0f);
 		configure_stream("EXTENDED_SYS_STATE", 1.0f);
 		configure_stream("ATTITUDE", 25.0f);
@@ -2103,10 +2111,14 @@ Mavlink::task_main(int argc, char *argv[])
 		break;
 
 	case MAVLINK_MODE_MAGIC:
+		// SANJU
+		PX4_WARN("mavlink mode magic");
 		//stream nothing
 		break;
 
 	case MAVLINK_MODE_CONFIG:
+		// SANJU
+		PX4_WARN("mavlink mode %s", MAVLINK_MODE_CONFIG);
 		// Enable a number of interesting streams we want via USB
 		configure_stream("SYS_STATUS", 1.0f);
 		configure_stream("EXTENDED_SYS_STATE", 2.0f);
@@ -2144,10 +2156,14 @@ Mavlink::task_main(int argc, char *argv[])
 		break;
 
 	case MAVLINK_MODE_IRIDIUM:
+		// SANJU
+		PX4_WARN("mavlink mode %s", MAVLINK_MODE_IRIDIUM);
 		configure_stream("HIGH_LATENCY", 0.1f);
 		break;
 
 	default:
+		// SANJU
+		PX4_WARN("mavlink mode in default");
 		break;
 	}
 

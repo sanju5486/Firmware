@@ -888,26 +888,44 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 					pos_sp_triplet.next.valid = false;
 					pos_sp_triplet.current.valid = true;
 
+					//SANJU
+					PX4_WARN("is_takeoff_sp = %d", is_takeoff_sp);
+					PX4_WARN("is_loiter_sp = %d", is_loiter_sp);
+					PX4_WARN("is_land_sp = %d", is_land_sp);
+					PX4_WARN("is_idle_sp = %d", is_idle_sp);
+					PX4_WARN("ignore_position = %d", offboard_control_mode.ignore_position);
+					PX4_WARN("ignore_velocity = %d", offboard_control_mode.ignore_velocity);
+					PX4_WARN("ignore_alt_hold = %d", offboard_control_mode.ignore_alt_hold);
+					PX4_WARN("ignore_acceleration_force = %d", offboard_control_mode.ignore_acceleration_force);
+					PX4_WARN("ignore_attitude = %d", offboard_control_mode.ignore_attitude);
+					PX4_WARN("ignore_bodyrate = %d", offboard_control_mode.ignore_bodyrate);
+
 					/* Order of statements matters. Takeoff can override loiter.
 					 * See https://github.com/mavlink/mavlink/pull/670 for a broader conversation. */
 					if (is_takeoff_sp) {
+						PX4_WARN("in take off");
 						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_TAKEOFF;
 					
 					} else if (is_loiter_sp) {
+						PX4_WARN("in loiter");
 						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_LOITER;
 
 					} else if (is_land_sp) {
+						PX4_WARN("in land");
 						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_LAND;
 
 					} else if (is_idle_sp) {
+						PX4_WARN("in idle");
 						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_IDLE;
 
 					} else {
+						PX4_WARN("in position");
 						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_POSITION;
 					}
 
 					/* set the local pos values */
 					if (!offboard_control_mode.ignore_position) {
+						PX4_WARN("in !ignore_position");
 						pos_sp_triplet.current.position_valid = true;
 						pos_sp_triplet.current.x = set_position_target_local_ned.x;
 						pos_sp_triplet.current.y = set_position_target_local_ned.y;
@@ -919,6 +937,7 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 
 					/* set the local vel values */
 					if (!offboard_control_mode.ignore_velocity) {
+						PX4_WARN("in !ignore_velocity");
 						pos_sp_triplet.current.velocity_valid = true;
 						pos_sp_triplet.current.vx = set_position_target_local_ned.vx;
 						pos_sp_triplet.current.vy = set_position_target_local_ned.vy;
@@ -932,6 +951,7 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 					}
 
 					if (!offboard_control_mode.ignore_alt_hold) {
+						PX4_WARN("in !ignore_alt_hold");
 						pos_sp_triplet.current.alt_valid = true;
 						pos_sp_triplet.current.z = set_position_target_local_ned.z;
 
@@ -942,6 +962,7 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 					/* set the local acceleration values if the setpoint type is 'local pos' and none
 					 * of the accelerations fields is set to 'ignore' */
 					if (!offboard_control_mode.ignore_acceleration_force) {
+						PX4_WARN("in !ignore_acceleration_force");
 						pos_sp_triplet.current.acceleration_valid = true;
 						pos_sp_triplet.current.a_x = set_position_target_local_ned.afx;
 						pos_sp_triplet.current.a_y = set_position_target_local_ned.afy;
@@ -955,6 +976,7 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 
 					/* set the yaw sp value */
 					if (!offboard_control_mode.ignore_attitude) {
+						PX4_WARN("in !ignore_attitude");
 						pos_sp_triplet.current.yaw_valid = true;
 						pos_sp_triplet.current.yaw = set_position_target_local_ned.yaw;
 
@@ -964,6 +986,7 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 
 					/* set the yawrate sp value */
 					if (!offboard_control_mode.ignore_bodyrate) {
+						PX4_WARN("in !ignore_bodyrate");
 						pos_sp_triplet.current.yawspeed_valid = true;
 						pos_sp_triplet.current.yawspeed = set_position_target_local_ned.yaw_rate;
 
@@ -988,7 +1011,7 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 
 		}		
 	//}
-		PX4_WARN("Not in Local NED");
+		PX4_WARN("Ending Local NED");
 }
 
 void
@@ -1625,6 +1648,8 @@ MavlinkReceiver::handle_message_manual_control(mavlink_message_t *msg)
 void
 MavlinkReceiver::handle_message_heartbeat(mavlink_message_t *msg)
 {
+	//SANJU - THESE TWO IF CONDITIONS MIGHT NEED REMOVED 
+
 	/* telemetry status supported only on first TELEMETRY_STATUS_ORB_ID_NUM mavlink channels */
 	if (_mavlink->get_channel() < (mavlink_channel_t)ORB_MULTI_MAX_INSTANCES) {
 		mavlink_heartbeat_t hb;
