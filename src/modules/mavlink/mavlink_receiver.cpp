@@ -906,13 +906,13 @@ MavlinkReceiver::handle_message_set_position_target_local_ned(mavlink_message_t 
 						PX4_WARN("in take off");
 						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_TAKEOFF;
 					
-					} else if (is_loiter_sp) {
-						PX4_WARN("in loiter");
-						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_LOITER;
-
 					} else if (is_land_sp) {
 						PX4_WARN("in land");
 						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_LAND;
+
+					} else if (is_loiter_sp) {
+						PX4_WARN("in loiter");
+						pos_sp_triplet.current.type = position_setpoint_s::SETPOINT_TYPE_LOITER;				
 
 					} else if (is_idle_sp) {
 						PX4_WARN("in idle");
